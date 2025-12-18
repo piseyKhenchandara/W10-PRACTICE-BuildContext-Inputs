@@ -43,28 +43,9 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
   }
 
   void onExpenseRemoved(Expense expense) {
-
-    final expenseIndex = _expenses.indexOf(expense);
     setState(() {
       _expenses.remove(expense);
     });
-
-    ScaffoldMessenger.of(context).clearSnackBars();
-
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(
-        content: Text('Expense deleted'),
-        duration: Duration(seconds: 3),
-        action: SnackBarAction(
-          label: 'Undo',
-          onPressed: () {
-            setState(() {
-              _expenses.insert(expenseIndex, expense);
-            });
-          },
-        ),
-      ),
-    );
   }
 
   @override
@@ -81,24 +62,17 @@ class _ExpensesScreenState extends State<ExpensesScreen> {
         backgroundColor: Colors.blue[700],
         title: const Text('Ronan-The-Best Expenses App'),
       ),
-      body: _expenses.isEmpty
-      ? Center(
-          child: Text(
-            'No expenses found. Start adding some!',
-            style: TextStyle(fontSize: 16),
-          ),
-        )
-      : ListView.builder(
-          itemCount: _expenses.length,
-          itemBuilder: (context, index) => Dismissible(
-            key: Key(_expenses[index].id),
-            onDismissed: (direction) {
-              onExpenseRemoved(_expenses[index]);
-            },
-            child: ExpenseItem(expense: _expenses[index]),
-          ),
+      body: ListView.builder(
+        itemCount: _expenses.length,
+        itemBuilder: (context, index) => Dismissible(
+          key: Key(_expenses[index].id),  // Unique key using expense ID
+          onDismissed: (direction) {
+            onExpenseRemoved(_expenses[index]);
+          },
+          child: ExpenseItem(expense: _expenses[index]),
         ),
-      );
+      ),
+    );
   }
 }
 
